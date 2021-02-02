@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:keepScreenOn="true"
+    tools:context=".MainActivity">
+
+    <TextClock
+        android:id="@+id/tc_hhmm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0fff"
+        android:fontFamily="@font/digital_mono"
+        android:textStyle="italic"
+        android:textColor="#fffc"
+        android:format12Hour="h:mm\u00A0"
+        android:format24Hour="HH:mm\u00A0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@id/tc_ymd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextClock
+        android:id="@+id/tc_ss"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0fcc"
+        android:format24Hour="ss\u00A0"
+        android:format12Hour="ss\u00A0"
+        android:paddingBottom="10dp"
+        android:textColor="#fbbb"
+        android:fontFamily="@font/digital_mono"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tc_hhmm"  />
+
+    <TextClock
+        android:id="@+id/tc_ymd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:format24Hour="yyyy.MM.dd.EEEE"
+        android:format12Hour="yyyy.MM.dd.EEEE"
+        android:paddingTop="10dp"
+        android:textColor="#ffff"
+        android:fontFamily="@font/digital_mono"
+        android:textStyle="italic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tc_hhmm"  />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
