@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.TextClock;
 
 public class MainActivity extends AppCompatActivity {
-    TextClock textClock_hhmm, textClock_ss, textClock_ymd;
+    TextClock textClock_hhmm, textClock_ss, textClock_ymd, textClock_ap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         textClock_hhmm = findViewById(R.id.tc_hhmm);
         textClock_ss = findViewById(R.id.tc_ss);
         textClock_ymd = findViewById(R.id.tc_ymd);
+        textClock_ap = findViewById(R.id.tc_ap);
 
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -38,9 +39,13 @@ public class MainActivity extends AppCompatActivity {
         textClock_hhmm.setTextSize(Size_hhmm);
         textClock_ss.setTextSize(size_ss);
         textClock_ymd.setTextSize(size_ymd);
+        textClock_ap.setTextSize(size_ss/2);
 
-        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) textClock_ss.getLayoutParams();
-        params.bottomMargin=margin_bottom;
-        textClock_ss.setLayoutParams(params);
+        ConstraintLayout.LayoutParams param_s = (ConstraintLayout.LayoutParams) textClock_ss.getLayoutParams();
+        ConstraintLayout.LayoutParams param_ap = (ConstraintLayout.LayoutParams) textClock_ap.getLayoutParams();
+        param_s.bottomMargin=margin_bottom;
+        param_ap.bottomMargin=margin_bottom;
+        textClock_ss.setLayoutParams(param_s);
+        textClock_ap.setLayoutParams(param_ap);
     }
 }

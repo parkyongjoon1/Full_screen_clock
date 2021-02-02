@@ -9,6 +9,19 @@
     tools:context=".MainActivity">
 
     <TextClock
+        android:id="@+id/tc_ap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0fcc"
+        android:format24Hour=""
+        android:format12Hour="a"
+        android:paddingBottom="10dp"
+        android:textColor="#fbbb"
+        android:fontFamily="@font/digital_mono"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tc_hhmm"  />
+    <TextClock
         android:id="@+id/tc_hhmm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
