@@ -8,8 +8,8 @@ android {
         applicationId "com.tistory.sonar2.fullscreenclock"
         minSdkVersion 17
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.0"
+        versionCode 4
+        versionName "1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -29,5 +29,5 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    //implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
 }
