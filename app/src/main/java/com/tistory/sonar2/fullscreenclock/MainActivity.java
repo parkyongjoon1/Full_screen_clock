@@ -1,13 +1,17 @@
 package com.tistory.sonar2.fullscreenclock;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.BlurMaskFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,11 +24,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.azeesoft.lib.colorpicker.ColorPickerDialog;
+
 
 public class MainActivity extends AppCompatActivity {
     TextClock textClock_hhmm, textClock_ss, textClock_ymd, textClock_ap;
     TextView textview;
     public static int ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE= 2323;
+    Boolean showConfig=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         textClock_ss = findViewById(R.id.tc_ss);
         textClock_ymd = findViewById(R.id.tc_ymd);
         textClock_ap = findViewById(R.id.tc_ap);
-        textview = findViewById(R.id.tv);
+        textview = findViewById(R.id.tv); //for debug
 
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -72,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
         textClock_hhmm.setLayoutParams(param_hhmm);
         textClock_ss.setLayoutParams(param_s);
         textClock_ap.setLayoutParams(param_ap);
+
+        if(showConfig) show_config();
+        else hide_config();
+        loadSetting();
 
 //        param_t.width = ((int) pxWidth);
         textview.setLayoutParams(param_t);
@@ -188,10 +199,143 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == ACTION_MANAGE_OVERLAY_PERMISSION_REQUEST_CODE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!Settings.canDrawOverlays(getApplicationContext())) {
-                    Toast.makeText(getApplicationContext(),"다른앱위에 그리기를 허용해 주셔야 자동실행됩니다.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"You must allow drawing on top of other apps for it to run automatically.",Toast.LENGTH_SHORT).show();
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        showConfig = !showConfig;
+        if(showConfig) show_config();
+        else hide_config();
+    }
+
+    private void show_config() {
+        findViewById(R.id.btn_Save).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_Exit).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_clock_color).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_ampm_color).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_sec_color).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_date_color).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_background_color).setVisibility(View.VISIBLE);
+    }
+
+    private void hide_config() {
+        findViewById(R.id.btn_Save).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_Exit).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_clock_color).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_ampm_color).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_sec_color).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_date_color).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_background_color).setVisibility(View.INVISIBLE);
+    }
+
+    private void fromColorPicker(final TextView textView) {
+        ColorPickerDialog colorPickerDialog= ColorPickerDialog.createColorPickerDialog(this, ColorPickerDialog.DARK_THEME);
+        colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+            @Override
+            public void onColorPicked(int color, String hexVal) {
+                textView.setTextColor(color);
+            }
+        });
+        colorPickerDialog.setHexaDecimalTextColor(Color.parseColor("#89FF00")); //There are many functions like this
+        colorPickerDialog.show();
+    }
+
+    public void fnClockColor(View view) {
+        fromColorPicker(textClock_hhmm);
+    }
+
+    public void fnAmPmColor(View view) {
+        fromColorPicker(textClock_ap);
+    }
+
+    public void fnSecondColor(View view) {
+        fromColorPicker(textClock_ss);
+    }
+
+    public void fnDateColor(View view) {
+        fromColorPicker(textClock_ymd);
+    }
+
+    public void fnBackgroundColor(View view) {
+        ColorPickerDialog colorPickerDialog= ColorPickerDialog.createColorPickerDialog(this, ColorPickerDialog.DARK_THEME);
+        colorPickerDialog.setOnColorPickedListener(new ColorPickerDialog.OnColorPickedListener() {
+            @Override
+            public void onColorPicked(int color, String hexVal) {
+                textview.setBackgroundColor(color);
+            }
+        });
+        colorPickerDialog.setHexaDecimalTextColor(Color.parseColor("#FFFFFF")); //There are many functions like this
+        colorPickerDialog.show();
+    }
+
+    public void fnSave(View view) {
+        saveSetting();
+        Toast.makeText(getApplicationContext(),"Setting is saved!!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void fnExit(View view) {
+        finish();
+    }
+
+    public void loadSetting() {
+        SharedPreferences sharedPreferences = getSharedPreferences("SHARE_COLOR", MODE_PRIVATE);
+        //Log.d("ClockColor", sharedPreferences.getString("shClockColor", "#89FF00"));
+        //Log.d("getClockColor", String.valueOf(textClock_hhmm.getCurrentTextColor()));
+        try {
+            textClock_hhmm.setTextColor(Integer.parseInt(sharedPreferences.getString("shClockColor", "#89FF00")));
+        }
+        catch (Exception e) {
+            textClock_hhmm.setTextColor(Color.parseColor("#89FF00"));
+            Log.d("ERROR1", e.toString());
+        }
+
+        try {
+            textClock_ap.setTextColor(Integer.parseInt(sharedPreferences.getString("shAPColor", "#bbb")));
+        }
+        catch (Exception e) {
+            textClock_ap.setTextColor(Color.parseColor("#bbbbbb"));
+            Log.d("ERROR2", e.toString());
+        }
+
+        try {
+            textClock_ss.setTextColor(Integer.parseInt(sharedPreferences.getString("shSSColor", "#bbb")));
+        }
+        catch (Exception e) {
+            textClock_ss.setTextColor(Color.parseColor("#bbbbbb"));
+            Log.d("ERROR3", e.toString());
+        }
+
+        try {
+            textClock_ymd.setTextColor(Integer.parseInt(sharedPreferences.getString("shYMDColor", "#fff")));
+        }
+        catch (Exception e) {
+            textClock_ymd.setTextColor(Color.parseColor("#ffffff"));
+            Log.d("ERROR4", e.toString());
+        }
+
+        try {
+            textview.setBackgroundColor(Integer.parseInt(sharedPreferences.getString("shBackColor", "#000")));
+        }
+        catch (Exception e) {
+            textview.setBackgroundColor(Color.parseColor("#000000"));
+            Log.d("ERROR5", e.toString());
+        }
+    }
+
+    public void saveSetting() {
+        SharedPreferences sharedPreferences = getSharedPreferences("SHARE_COLOR", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("shClockColor",String.valueOf(textClock_hhmm.getCurrentTextColor()));
+        editor.putString("shAPColor",String.valueOf(textClock_ap.getCurrentTextColor()));
+        editor.putString("shSSColor",String.valueOf(textClock_ss.getCurrentTextColor()));
+        editor.putString("shYMDColor",String.valueOf(textClock_ymd.getCurrentTextColor()));
+        editor.putString("shBackColor",String.valueOf(((ColorDrawable)textview.getBackground()).getColor()));
+        editor.apply();
+        //Log.d("칼라테스트",String.valueOf(((ColorDrawable)textview.getBackground()).getColor()) );
     }
 }
 
